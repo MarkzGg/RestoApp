@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Carmencita</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        header {
+            background-color: #343a40;
+            color: white;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        header .menu-button {
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        header nav {
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            background-color: #343a40;
+            border: 1px solid #6c757d;
+            border-radius: 5px;
+        }
+
+        header nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        header nav ul li {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        header h1 {
+            cursor: pointer;
+        }
+
+        header .slogan {
+            font-style: italic;
+        }
+
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        .panel {
+            flex: 1;
+            min-width: 300px;
+            margin: 10px;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .left-panel {
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .right-panel button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .right-panel button:hover {
+            background-color: #0056b3;
+        }
+
+        .order-button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .order-button:hover {
+            background-color: #218838;
+        }
+
+        .scroll-indicator {
+            text-align: center;
+            padding: 10px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .modal {
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 5px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover, .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Encabezado -->
+        <header>
+            <div class="menu-button" @click="toggleMenu">☰</div>
+            <nav v-if="menuOpen">
+                <ul>
+                    <li @click="navigateTo('orders')">Órdenes</li>
+                    <li @click="navigateTo('inventory')">Inventario</li>
+                    <li @click="navigateTo('user')">Usuario</li>
+                </ul>
+            </nav>
+            <h1 @click="navigateTo('home')">Restaurant Carmencita</h1>
+            <p class="slogan">La mejor experiencia culinaria</p>
+        </header>
+
+        <!-- Paneles -->
+        <main>
+            <section class="panel left-panel">
+                <div v-for="(button, index) in visibleButtons" :key="index" class="order-button" @click="showOrderDetails(index)">
+                    Orden {{ index + 1 }}
+                </div>
+                <div v-if="buttons.length > 12" class="scroll-indicator">Desplázate para ver más</div>
+            </section>
+
+            <section class="panel right-panel">
+                <button @click="addOrder">Nueva Orden</button>
+                <button @click="deleteOrder">Borrar</button>
+                <button @click="cancelLastAction">Cancelar</button>
+            </section>
+        </main>
+
+        <!-- Modal para detalles de la orden -->
+        <div v-if="showModal" class="modal">
+            <div class="modal-content">
+                <span class="close" @click="closeModal">&times;</span>
+                <p>Detalles de la orden {{ selectedOrderIndex + 1 }}</p>
+                <!-- Aquí se pueden agregar más detalles de la orden -->
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                menuOpen: false,
+                showModal: false,
+                buttons: [],
+                actions: [],
+                selectedOrderIndex: null
+            },
+            computed: {
+                visibleButtons() {
+                    return this.buttons.slice(0, 12);
+                }
+            },
+            methods: {
+                toggleMenu() {
+                    this.menuOpen = !this.menuOpen;
+                },
+                navigateTo(page) {
+                    alert(`Navegando a ${page}`);
+                },
+                addOrder() {
+                    this.buttons.unshift({});
+                    this.actions.push('add');
+                },
+                deleteOrder() {
+                    if (this.buttons.length > 0) {
+                        this.buttons.shift();
+                        this.actions.push('delete');
+                    }
+                },
+                cancelLastAction() {
+                    const lastAction = this.actions.pop();
+                    if (lastAction === 'add') {
+                        this.buttons.shift();
+                    } else if (lastAction === 'delete') {
+                        this.buttons.unshift({});
+                    }
+                },
+                showOrderDetails(index) {
+                    this.selectedOrderIndex = index;
+                    this.showModal = true;
+                },
+                closeModal() {
+                    this.showModal = false;
+                    this.selectedOrderIndex = null;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
