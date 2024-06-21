@@ -1,18 +1,18 @@
 import {Router} from 'express'
-import { createUser, delateUser, getUser, getUsers, updateUser 
+import { createEntradas, delateEntradas, getEntradas, getEntrada, updateEntradas 
 } 
-from '../controllers/user.controllers.js';
+from '../controllers/entrada.controllers.js';
 
 const router = Router();
 
-router.get("/users", getUsers);
+router.get("/entrada", getEntradas);
 
-router.get("/users/:id", getUser );
+router.get("/entrada/:id", getEntrada );
 
-router.post("/users", createUser);
+router.post("/entrada", createEntradas);
 
-router.delete("/users/:id", delateUser);
+router.delete("/entrada/:id", delateEntradas);
 
-router.put("/users/:id", updateUser);
+router.put("/entrada/:id", updateEntradas);
 
 export default router;

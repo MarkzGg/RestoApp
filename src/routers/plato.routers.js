@@ -1,18 +1,18 @@
 import {Router} from 'express'
-import { createplatos, delateplatos, getplato, getplatos, updateplatos 
+import { createPlatos, delatePlatos, getPlato, getPlatos, updatePlatos 
 } 
 from '../controllers/plato.controller.js';
 
 const router = Router();
 
-router.get("/platos", getplatos);
+router.get("/platos", getPlatos);
 
-router.get("/plato/:id_plato", getplato);
+router.get("/platos/:id", getPlato);
 
-router.post("/platos", createplatos);
+router.post("/platos", createPlatos);
 
-router.delete("/platos/:id_plato", delateplatos);
+router.delete("/platos/:id", delatePlatos);
 
-router.put("/platos/:id_plato", updateplatos);
+router.put("/platos/:id", updatePlatos);
 
 export default router;
