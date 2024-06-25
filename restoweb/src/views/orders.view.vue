@@ -1,23 +1,38 @@
 <template>
   <div id="app">
     <h1 class="title" >Ordenes</h1>
-      <div class="container">
-        <div class="panel panel-left">
-          <div class="buttons-grid">
-            <button v-for="(button, index) in buttons" :key="index" @click="showOrderDetails(button)">
-              {{ button }}
-            </button>
-          </div>
-        </div>
-        
-        <div class="panel panel-right">
-          <button @click="addOrder">Nueva Orden</button>
-          <button @click="deleteOrder">Borrar</button>
-          <button @click="cancelLastAction">Cancelar</button>
+    <div class="container">
+      <div class="panel panel-left">
+        <div class="buttons-grid">
+          <button v-for="(button, index) in buttons" :key="index" @click="showOrderDetails(button)">
+            {{ button }}
+          </button>
         </div>
       </div>
+      
+      <div class="panel panel-right">
+        <button @click="addOrder">Nueva Orden</button>
+        <button @click="deleteOrder">Borrar</button>
+        <button @click="cancelLastAction">Cancelar</button>
+      </div>
+    </div>
+    <div id="myModal" class="modal" v-if="isModalOpen">
+      <div class="modal-content">
+        <span class="close" @click="toggleModal">&times;</span>
+        <ul class="order-details">
+          <li><strong>Plato:</strong> {{ order.plato }}</li>
+          <li><strong>Entrada:</strong> {{ order.entrada }}</li>
+          <li><strong>Guarniciones:</strong> {{ order.guarniciones }}</li>
+          <li><strong>Bebidas:</strong> {{ order.bebidas }}</li>
+          <li><strong>Total:</strong> {{ order.total }}</li>
+        </ul>
+        
+        <div class="output">Texto guardado aparecerá aquí: {{ savedText }}</div>
+      </div>
+    </div>
 
   </div>
+
 </template>
   
   <script>
@@ -29,6 +44,13 @@
       isModalOpen: false,
       buttons: Array.from({ length: 16 }, (_, i) => `Orden ${i + 1}`),
       actions: [],
+      order: {
+        plato: 'Ejemplo de plato',
+        entrada: 'Ejemplo de entrada',
+        guarniciones: 'Ejemplo de guarniciones',
+        bebidas: 'Ejemplo de bebidas',
+        total: 'Ejemplo de precio total',
+      },
       inputText: '',
       savedText: '',
     };
@@ -144,19 +166,21 @@
 .modal-content {
   background-color: #fefefe;
   margin: auto;
-  padding: 20px;
-  border: 1px solid #888;
+  padding: 200px;
+  border: none solid #888;
   width: 80%;
-  max-width: 500px;
-  position: relative;
+  max-width: 800px;
+  position: absolute;
   text-align: left;
+  border-radius: 10px;
+  
 }
 
 .close {
   color: #aaa;
   float: right;
   font-size: 28px;
-  font-weight: bold;
+  font-weight: normal;
 }
 
 .close:hover,
